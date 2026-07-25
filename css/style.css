@@ -1261,3 +1261,37 @@ body {
         scroll-behavior: auto !important;
     }
 }
+
+/* ---- Quiz Page ---- */
+.quiz-header {
+    background:
+        linear-gradient(135deg, rgba(27, 67, 50, 0.88) 0%, rgba(45, 106, 79, 0.75) 100%),
+        url('../img/hero_premium.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 150px 0 70px;
+    color: #fff;
+    text-align: center;
+}
+
+.quiz-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    margin: 0.75rem 0 0.5rem;
+}
+
+.quiz-header .lead {
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+#nutrition-quiz button {
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+#nutrition-quiz button:hover:not(:disabled) {
+    border-color: var(--color-primary-light) !important;
+    transform: translateY(-1px);
+}

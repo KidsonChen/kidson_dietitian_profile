@@ -3,6 +3,11 @@
    並在頁面底部引入 <script src="/js/quiz.js"></script>
 */
 (function () {
+  // RAG API（Cloudflare Workers + Vectorize，回答附文獻頁碼引用）
+  const RAG_API = 'https://kidson-supplement-rag.kidson7911.workers.dev/api/query';
+  // 產品購買連結（1shop 賣場）
+  const SHOP_URL = 'https://drnutrii.1shop.tw/HUG';
+
   const questions = [
     {
       id: 1,
@@ -111,6 +116,38 @@
     return recommendations[primary] || recommendations.energy;
   }
 
+  // 呼叫 RAG API 產生個人化文獻分析報告
+  function fetchAiReport(rec, answers, targetEl) {
+    const ingredients = rec.products.map(function (p) { return p.name + '（' + p.reason + '）'; }).join('、');
+    const query =
+      '客戶主要健康需求：' + rec.title + '。' +
+      '考慮補充的產品成分：' + ingredients + '。' +
+      '請根據科學文獻說明這些相關營養素的功效證據、有效劑量範圍與注意事項。';
+
+    fetch(RAG_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: query }),
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        var text = data.answer || '暫時無法產生分析報告。';
+        if (data.citations && data.citations.length) {
+          text += '\n\n📚 文獻依據：\n' + data.citations
+            .map(function (c) { return '[' + c.n + '] ' + c.source_file + ', p.' + c.page; })
+            .join('\n');
+        }
+        targetEl.textContent = text;
+      })
+      .catch(function (err) {
+        targetEl.textContent =
+          'AI 分析暫時無法使用（' + err.message + '）。您仍可參考上方營養師推薦方案，或預約免費諮詢由營養師為您解說。';
+      });
+  }
+
   // 渲染元件
   function createQuiz(container) {
     let currentStep = 0;
@@ -158,7 +195,7 @@
       const bar = document.createElement('div');
       bar.style.width = percent + '%';
       bar.style.height = '100%';
-      bar.style.background = '#0ea5a0';
+      bar.style.background = '#2D6A4F';
       bar.style.borderRadius = '999px';
       prog.appendChild(bar);
       progressWrap.appendChild(progressInfo);
@@ -192,7 +229,7 @@
           btn.style.padding = '12px';
           btn.style.borderRadius = '10px';
           btn.style.border = '2px solid #e6e6e6';
-          btn.style.background = answers[q.id] === opt.value ? '#e6fffa' : '#fff';
+          btn.style.background = answers[q.id] === opt.value ? '#e8f5ee' : '#fff';
           btn.addEventListener('click', function () {
             answers[q.id] = opt.value;
             render();
@@ -223,7 +260,7 @@
         next.type = 'button';
         next.textContent = currentStep === questions.length - 1 ? '查看結果' : '下一題';
         next.disabled = !answers[questions[currentStep].id];
-        next.style.background = '#fb923c';
+        next.style.background = '#40916C';
         next.style.color = '#fff';
         next.style.border = 'none';
         next.style.padding = '8px 12px';
@@ -276,7 +313,7 @@
 
       const title = document.createElement('h3');
       title.textContent = rec.title;
-      title.style.color = '#0ea5a0';
+      title.style.color = '#2D6A4F';
       card.appendChild(title);
 
       rec.products.forEach((pdt) => {
@@ -298,13 +335,35 @@
         left.appendChild(name);
         left.appendChild(reason);
 
+        const right = document.createElement('div');
+        right.style.textAlign = 'right';
+        right.style.flexShrink = '0';
+        right.style.marginLeft = '12px';
+
         const price = document.createElement('div');
         price.textContent = pdt.price + ' 起';
-        price.style.color = '#0ea5a0';
+        price.style.color = '#2D6A4F';
         price.style.fontWeight = '600';
 
+        const buyLink = document.createElement('a');
+        buyLink.href = pdt.url || SHOP_URL;
+        buyLink.target = '_blank';
+        buyLink.rel = 'noopener noreferrer';
+        buyLink.textContent = '🛒 前往購買';
+        buyLink.style.display = 'inline-block';
+        buyLink.style.marginTop = '6px';
+        buyLink.style.fontSize = '13px';
+        buyLink.style.color = '#fff';
+        buyLink.style.background = '#40916C';
+        buyLink.style.padding = '4px 12px';
+        buyLink.style.borderRadius = '999px';
+        buyLink.style.textDecoration = 'none';
+
+        right.appendChild(price);
+        right.appendChild(buyLink);
+
         item.appendChild(left);
-        item.appendChild(price);
+        item.appendChild(right);
         card.appendChild(item);
       });
 
@@ -312,11 +371,35 @@
       adviceBox.style.marginTop = '12px';
       adviceBox.style.padding = '12px';
       adviceBox.style.borderRadius = '8px';
-      adviceBox.style.background = '#ecfdf5';
+      adviceBox.style.background = '#eef7f1';
       adviceBox.textContent = '營養師建議：' + rec.advice;
       card.appendChild(adviceBox);
 
       wrap.appendChild(card);
+
+      // --- AI 個人化分析報告（RAG，文獻佐證） ---
+      const aiBox = document.createElement('div');
+      aiBox.style.marginTop = '16px';
+      aiBox.style.padding = '20px';
+      aiBox.style.borderRadius = '12px';
+      aiBox.style.background = '#fff';
+      aiBox.style.boxShadow = '0 4px 12px rgba(0,0,0,0.06)';
+
+      const aiTitle = document.createElement('h3');
+      aiTitle.textContent = '🔬 AI 文獻分析報告';
+      aiTitle.style.color = '#2D6A4F';
+      aiTitle.style.marginTop = '0';
+      aiBox.appendChild(aiTitle);
+
+      const aiBody = document.createElement('div');
+      aiBody.style.whiteSpace = 'pre-wrap';
+      aiBody.style.lineHeight = '1.7';
+      aiBody.style.color = '#374151';
+      aiBody.textContent = '正在根據科學文獻為您產生個人化分析（約需 10–20 秒）…';
+      aiBox.appendChild(aiBody);
+      wrap.appendChild(aiBox);
+
+      fetchAiReport(rec, answers, aiBody);
 
       // CTA
       const ctas = document.createElement('div');
@@ -331,7 +414,7 @@
       buy.textContent = '立即選購推薦產品';
       buy.style.display = 'inline-block';
       buy.style.textAlign = 'center';
-      buy.style.background = '#fb923c';
+      buy.style.background = '#40916C';
       buy.style.color = '#fff';
       buy.style.padding = '10px';
       buy.style.borderRadius = '999px';
