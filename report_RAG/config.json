@@ -1,0 +1,49 @@
+{
+  "project": {
+    "name": "月結單處理系統",
+    "version": "1.0.0",
+    "description": "自動讀取PDF月結單，生成Markdown，存儲到資料庫並統計分析"
+  },
+  "paths": {
+    "raw_data": "./raw_data",
+    "markdown_output": "./md",
+    "report_output": "./report",
+    "database_path": "./database",
+    "source_code": "./src"
+  },
+  "database": {
+    "type": "sqlite",
+    "name": "report_rag.db",
+    "host": "localhost",
+    "port": 5432,
+    "username": "",
+    "password": ""
+  },
+  "pdf_processing": {
+    "supported_formats": [
+      "pdf"
+    ],
+    "max_file_size_mb": 50,
+    "timeout_seconds": 300,
+    "extract_tables": true,
+    "ocr_enabled": false
+  },
+  "markdown_generation": {
+    "include_metadata": true,
+    "include_toc": true,
+    "date_format": "%Y-%m-%d",
+    "currency_symbol": "NT$"
+  },
+  "statistics": {
+    "enable_charts": true,
+    "chart_format": "png",
+    "monthly_comparison": true,
+    "category_analysis": true,
+    "trend_analysis": true
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "file": "logs/app.log"
+  }
+}

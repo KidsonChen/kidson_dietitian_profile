@@ -1,0 +1,58 @@
+# Robots.txt for Kidson Nutritionist
+# https://storage.googleapis.com/kidson_dietitan/kidson_dietitan_profile/
+
+# Allow all robots to access the site
+User-agent: *
+Allow: /
+Allow: /css/
+Allow: /js/
+Allow: /img/
+
+# Disallow admin areas and unnecessary files
+Disallow: /cgi-bin/
+Disallow: /tmp/
+
+# Sitemap location
+Sitemap: https://storage.googleapis.com/kidson_dietitan/kidson_dietitan_profile/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 0
+
+# Google specific
+User-agent: Googlebot
+Disallow:
+
+# Bing specific
+User-agent: Bingbot
+Disallow:
+
+# Allow social media bots for rich previews
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Instagram
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /

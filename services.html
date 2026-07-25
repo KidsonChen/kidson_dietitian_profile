@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>專業營養服務 - 個人網站</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #343a40;
+            transition: background-color 0.3s;
+        }
+        .navbar.scrolled {
+            background-color: #212529;
+        }
+        .service-header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('img/health_header.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            }
+        .service-detail {
+            padding: 60px 0;
+        }
+        .process-step {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 30px;
+        }
+        .process-step:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background-color: #0d6efd;
+        }
+        .process-step:after {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #0d6efd;
+        }
+
+        /* 按鈕按下壓感（:active tactile feedback） */
+        .btn:active,
+        .btn-primary:active {
+            transform: translateY(0) scale(0.97) !important;
+            box-shadow: 0 2px 8px rgba(45, 106, 79, 0.30) !important;
+        }
+        .btn-outline-light:active {
+            transform: translateY(0) scale(0.97) !important;
+            background: rgba(255, 255, 255, 0.10) !important;
+            border-color: rgba(255, 255, 255, 0.80) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Kidson營養師</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">首頁</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="services.html">服務</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">關於我</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">聯繫</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 服務頁面標題 -->
+    <section class="service-header">
+        <div class="container">
+            <h1 class="display-4" data-aos="fade-up">專業營養服務</h1>
+            <p class="lead" data-aos="fade-up" data-aos-delay="100">為您提供全方位的營養諮詢與健康管理方案</p>
+        </div>
+    </section>
+
+    <!-- 服務項目 -->
+    <section class="service-detail">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-7 mb-4" data-aos="fade-up">
+                    <div class="card service-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="icon-wrap mx-auto mb-3"><i class="fas fa-utensils"></i></div>
+                            <h3 class="card-title">個人化飲食規劃</h3>
+                            <p class="card-text mb-3">根據您的健康狀況、生活習慣和目標，量身打造專屬的飲食計劃，幫助您建立健康的飲食習慣。</p>
+                            <ul class="list-unstyled text-start mx-auto" style="max-width: 260px;">
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>營養評估與分析</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>個人化飲食建議</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>定期追蹤與調整</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card service-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="icon-wrap mx-auto mb-3"><i class="fas fa-weight"></i></div>
+                            <h3 class="card-title">體重管理諮詢</h3>
+                            <p class="card-text mb-3">提供科學的減重或增重方案，結合營養學知識和行為改變策略，幫助您達到理想的體重目標。</p>
+                            <ul class="list-unstyled text-start mx-auto" style="max-width: 260px;">
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>體重目標設定</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>飲食行為分析</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>長期維持策略</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card service-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="icon-wrap mx-auto mb-3"><i class="fas fa-heartbeat"></i></div>
+                            <h3 class="card-title">慢性病營養指導</h3>
+                            <p class="card-text mb-3">針對糖尿病、高血壓等慢性疾病，提供專業的飲食建議和營養治療方案。</p>
+                            <ul class="list-unstyled text-start mx-auto" style="max-width: 260px;">
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>疾病營養評估</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>飲食處方設計</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>定期監測追蹤</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 服務流程 -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5" data-aos="fade-up">服務流程</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="process-step" data-aos="fade-right">
+                        <h4>1. 初步諮詢</h4>
+                        <p>了解您的健康狀況、飲食習慣和生活型態，進行初步評估。</p>
+                    </div>
+                    <div class="process-step" data-aos="fade-right" data-aos-delay="100">
+                        <h4>2. 詳細評估</h4>
+                        <p>進行詳細的營養評估，包括飲食記錄分析、身體組成測量等。</p>
+                    </div>
+                    <div class="process-step" data-aos="fade-right" data-aos-delay="200">
+                        <h4>3. 方案制定</h4>
+                        <p>根據評估結果，制定個人化的營養計劃和目標。</p>
+                    </div>
+                    <div class="process-step" data-aos="fade-right" data-aos-delay="300">
+                        <h4>4. 定期追蹤</h4>
+                        <p>定期追蹤進度，適時調整計劃，確保達到預期效果。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 預約按鈕 -->
+    <section class="py-5 text-center">
+        <div class="container">
+            <h3 class="mb-4" data-aos="fade-up">準備開始您的健康之旅了嗎？</h3>
+            <a href="index.html#contact" class="btn btn-primary btn-lg" data-aos="fade-up" data-aos-delay="100">立即預約諮詢</a>
+        </div>
+    </section>
+
+    <!-- 頁腳 -->
+    <footer class="footer">
+    <div class="container">
+        <p>© 2025 Kidson營養師. All Rights Reserved.</p>
+    </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // 初始化 AOS
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        // 導航欄滾動效果（IntersectionObserver）
+        const navbar = document.querySelector('.navbar');
+        const navSentinel = document.createElement('div');
+        navSentinel.style.cssText =
+            'position:absolute;top:50px;left:0;right:0;height:1px;pointer-events:none;';
+        document.body.prepend(navSentinel);
+
+        const navObserver = new IntersectionObserver(([entry]) => {
+            navbar.classList.toggle('scrolled', !entry.isIntersecting);
+        }, { threshold: 0 });
+        navObserver.observe(navSentinel);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>問卷示範 - 營養需求檢測</title>
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+      /* 如果你沒有全站 style，可視需要略過或調整 */
+      body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans TC', 'Helvetica Neue', Arial; background:#f8fafc; color:#111827; }
+      a { text-decoration:none }
+      .container { padding:40px 16px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 style="text-align:center">問卷示範頁面</h1>
+      <p style="text-align:center;color:#6b7280">將問卷插入到任一頁面的方式：放置一個 mount 節點，並引入腳本。</p>
+
+      <!-- 在你想顯示問卷的地方放這個 div -->
+      <div id="nutrition-quiz"></div>
+    </div>
+
+    <!-- 請確保路徑正確：/js/quiz.js -->
+    <script src="/js/quiz.js"></script>
+  </body>
+</html>
