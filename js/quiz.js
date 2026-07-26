@@ -10,6 +10,34 @@
 
   const questions = [
     {
+      id: 'gender',
+      question: "您的生理性別是？",
+      options: [
+        { label: "女性", value: "female" },
+        { label: "男性", value: "male" },
+      ],
+    },
+    {
+      id: 'ageGroup',
+      question: "您的年齡層是？",
+      options: [
+        { label: "4–12 歲（孩童）", value: "child" },
+        { label: "13–18 歲（青少年）", value: "teen" },
+        { label: "19–50 歲（成年）", value: "adult" },
+        { label: "51 歲以上（銀髮族）", value: "senior" },
+      ],
+    },
+    {
+      id: 'group',
+      question: "您目前屬於哪個特殊族群？（可跳過視為一般）",
+      options: [
+        { label: "一般族群", value: "general" },
+        { label: "懷孕中", value: "pregnant" },
+        { label: "哺乳期", value: "lactating" },
+        { label: "慢性病用藥中", value: "chronic" },
+      ],
+    },
+    {
       id: 1,
       question: "您目前最想改善的健康問題是？",
       options: [
@@ -18,16 +46,6 @@
         { label: "容易疲勞、精神不濟", value: "energy" },
         { label: "皮膚暗沉、想要美白", value: "beauty" },
         { label: "體重管理、想要瘦身", value: "weight" },
-      ],
-    },
-    {
-      id: 2,
-      question: "您的年齡區間是？",
-      options: [
-        { label: "20-30 歲", value: "20-30" },
-        { label: "31-40 歲", value: "31-40" },
-        { label: "41-50 歲", value: "41-50" },
-        { label: "51 歲以上", value: "51+" },
       ],
     },
     {
@@ -61,6 +79,71 @@
       ],
     },
   ];
+
+  // 基本資料中文標籤（結果頁顯示用）
+  const profileLabels = {
+    gender: { female: "女性", male: "男性" },
+    ageGroup: { child: "孩童（4–12 歲）", teen: "青少年（13–18 歲）", adult: "成年（19–50 歲）", senior: "銀髮族（51 歲以上）" },
+    group: { general: "一般族群", pregnant: "懷孕中", lactating: "哺乳期", chronic: "慢性病用藥中" },
+  };
+
+  // 台灣 DRIs 第八版關鍵營養素每日建議攝取量（RDA 或 AI）
+  // 單位：鈣 mg、鐵 mg、鋅 mg、鎂 mg、維生素D μg、葉酸 μg、DHA mg
+  // 索引順序：gender(0=女,1=男) × ageGroup(child/teen/adult/senior) × group(general/pregnant/lactating/chronic)
+  const DRIS = {
+    calcium: {
+      child:   { f: 800, m: 800 }, teen: { f: 1200, m: 1200 }, adult: { f: 1000, m: 1000 }, senior: { f: 1000, m: 1000 },
+      preg: 1000, lact: 1000,
+    },
+    iron: {
+      child:   { f: 10, m: 10 }, teen: { f: 15, m: 15 }, adult: { f: 15, m: 10 }, senior: { f: 10, m: 10 },
+      preg: 27, lact: 15,
+    },
+    zinc: {
+      child:   { f: 10, m: 10 }, teen: { f: 12, m: 15 }, adult: { f: 12, m: 15 }, senior: { f: 12, m: 15 },
+      preg: 15, lact: 12,
+    },
+    magnesium: {
+      child:   { f: 180, m: 180 }, teen: { f: 350, m: 410 }, adult: { f: 320, m: 380 }, senior: { f: 310, m: 340 },
+      preg: 355, lact: 320,
+    },
+    vitD: {
+      child: 10, teen: 10, adult: 10, senior: 15, preg: 10, lact: 10,
+    },
+    folate: {
+      child: 200, teen: 400, adult: 400, senior: 400, preg: 600, lact: 500,
+    },
+    dha: {
+      child: "300–500", teen: "300–500", adult: "300–500", senior: "300–500", preg: "300–500", lact: "300–500",
+    },
+  };
+
+  // 依性別 / 年齡層 / 特殊族群計算該客戶的 DRIs 基準
+  function getDrisBaseline(answers) {
+    const g = answers.gender === 'male' ? 'm' : 'f';
+    const age = answers.ageGroup || 'adult';
+    const grp = answers.group || 'general';
+    const base = {};
+    const key = grp === 'pregnant' ? 'preg' : grp === 'lactating' ? 'lact' : null;
+    if (key) {
+      base.calcium = DRIS.calcium[key];
+      base.iron = DRIS.iron[key];
+      base.zinc = DRIS.zinc[key];
+      base.magnesium = DRIS.magnesium[key];
+      base.vitD = DRIS.vitD[key];
+      base.folate = DRIS.folate[key];
+      base.dha = DRIS.dha[key];
+    } else {
+      base.calcium = DRIS.calcium[age][g];
+      base.iron = DRIS.iron[age][g];
+      base.zinc = DRIS.zinc[age][g];
+      base.magnesium = DRIS.magnesium[age][g];
+      base.vitD = DRIS.vitD[age];
+      base.folate = DRIS.folate[age];
+      base.dha = DRIS.dha[age];
+    }
+    return base;
+  }
 
   function getRecommendation(answers) {
     const primary = answers[1];
@@ -119,10 +202,14 @@
   // 呼叫 RAG API 產生個人化文獻分析報告
   function fetchAiReport(rec, answers, targetEl) {
     const ingredients = rec.products.map(function (p) { return p.name + '（' + p.reason + '）'; }).join('、');
+    const gender = profileLabels.gender[answers.gender] || '未填寫';
+    const ageGroup = profileLabels.ageGroup[answers.ageGroup] || '未填寫';
+    const group = profileLabels.group[answers.group] || '一般族群';
     const query =
+      '客戶基本資料：生理性別 ' + gender + '，年齡層 ' + ageGroup + '，特殊族群 ' + group + '。' +
       '客戶主要健康需求：' + rec.title + '。' +
       '考慮補充的產品成分：' + ingredients + '。' +
-      '請根據科學文獻說明這些相關營養素的功效證據、有效劑量範圍與注意事項。';
+      '請根據科學文獻與台灣DRIs第八版，說明這些相關營養素對此族群的功效證據、有效劑量範圍，以及對比該族群的每日建議攝取量（如孕婦葉酸600μg、鐵27mg；銀髮族維生素D 15μg；孩童鈣600-800mg），並提醒注意事項。';
 
     // 重試直到報告含三個小節（避免免費模型截斷）
     function tryOnce(attempt) {
@@ -257,7 +344,7 @@
       h1.style.margin = '0 0 8px 0';
       h1.style.fontSize = '20px';
       const p = document.createElement('p');
-      p.textContent = '回答 5 個問題，找到最適合您的保健方案';
+      p.textContent = '回答 7 個問題，找到最適合您的保健方案';
       p.style.margin = '0';
       p.style.color = '#6b7280';
       header.appendChild(h1);
@@ -378,6 +465,45 @@
       wrap.style.maxWidth = '720px';
       wrap.style.margin = '0 auto';
       wrap.style.padding = '24px';
+
+      // 基本資料摘要
+      const profileBox = document.createElement('div');
+      profileBox.style.padding = '12px 16px';
+      profileBox.style.borderRadius = '10px';
+      profileBox.style.background = '#f0fdf4';
+      profileBox.style.border = '1px solid #bbf7d0';
+      profileBox.style.marginBottom = '16px';
+      profileBox.style.fontSize = '14px';
+      profileBox.style.color = '#166534';
+      profileBox.style.lineHeight = '1.6';
+      const g = profileLabels.gender[answers.gender] || '未填寫';
+      const a = profileLabels.ageGroup[answers.ageGroup] || '未填寫';
+      const grp = profileLabels.group[answers.group] || '一般族群';
+      profileBox.innerHTML = '基本資料：<b>' + g + '</b> ・ <b>' + a + '</b> ・ <b>' + grp + '</b>';
+      wrap.appendChild(profileBox);
+
+      // 每日建議攝取量（台灣 DRIs 第八版）卡片
+      const dris = getDrisBaseline(answers);
+      const drisBox = document.createElement('div');
+      drisBox.style.padding = '14px 16px';
+      drisBox.style.borderRadius = '10px';
+      drisBox.style.background = '#eff6ff';
+      drisBox.style.border = '1px solid #bfdbfe';
+      drisBox.style.marginBottom = '16px';
+      drisBox.style.fontSize = '13px';
+      drisBox.style.color = '#1e40af';
+      drisBox.style.lineHeight = '1.8';
+      const drisRows = [
+        '鈣 ' + dris.calcium + ' mg',
+        '鐵 ' + dris.iron + ' mg',
+        '鋅 ' + dris.zinc + ' mg',
+        '鎂 ' + dris.magnesium + ' mg',
+        '維生素 D ' + dris.vitD + ' μg',
+        '葉酸 ' + dris.folate + ' μg',
+        'DHA ' + dris.dha + ' mg',
+      ];
+      drisBox.innerHTML = '<b>您的每日建議攝取量（台灣 DRIs 第八版）</b><br>' + drisRows.join('　・　');
+      wrap.appendChild(drisBox);
 
       const header = document.createElement('div');
       header.style.textAlign = 'center';
