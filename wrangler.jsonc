@@ -8,6 +8,14 @@
   "assets": {
     "directory": "."
   },
+  "assets_ignore": [
+    "**/data/**",
+    "**/*.pdf",
+    "**/node_modules/**",
+    "**/.kiro/**",
+    "**/.github/**",
+    "RAG_supplement/**"
+  ],
   "compatibility_flags": [
     "nodejs_compat"
   ]
