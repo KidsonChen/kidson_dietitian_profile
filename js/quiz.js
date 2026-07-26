@@ -124,23 +124,100 @@
       '考慮補充的產品成分：' + ingredients + '。' +
       '請根據科學文獻說明這些相關營養素的功效證據、有效劑量範圍與注意事項。';
 
-    fetch(RAG_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: query }),
-    })
-      .then(function (res) {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json();
+    // 重試直到報告含三個小節（避免免費模型截斷）
+    function tryOnce(attempt) {
+      if (attempt > 2) {
+        targetEl.innerHTML = '<div style="color:#6b7280;line-height:1.7">分析生成不完整，請重新整理問卷或稍後再試。您仍可參考上方營養師推薦方案。</div>';
+        return;
+      }
+      fetch(RAG_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: query }),
       })
-      .then(function (data) {
-        var text = data.answer || '暫時無法產生分析報告。';
-        targetEl.textContent = text;
-      })
-      .catch(function (err) {
-        targetEl.textContent =
-          'AI 分析暫時無法使用（' + err.message + '）。您仍可參考上方營養師推薦方案，或預約免費諮詢由營養師為您解說。';
+        .then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          var text = data.answer || '';
+          // 完整性檢測：必須含三個小節標題
+          var hasAll = /1\.?\s*各成分怎麼幫你/.test(text) &&
+                           /2\.?\s*建議吃多少/.test(text) &&
+                           /3\.?\s*什麼時候吃/.test(text);
+          if (!hasAll && attempt <= 2) {
+            tryOnce(attempt + 1);
+            return;
+          }
+          if (!text) text = '暫時無法產生分析報告。';
+          renderAiCards(targetEl, text);
+        })
+        .catch(function (err) {
+          if (attempt <= 2) { tryOnce(attempt + 1); return; }
+          targetEl.innerHTML =
+            '<div style="color:#dc2626;line-height:1.7">AI 分析暫時無法使用（' + err.message + '）。您仍可參考上方營養師推薦方案，或預約免費諮詢由營養師為您解說。</div>';
+        });
+    }
+    tryOnce(1);
+  }
+
+  // 把 Worker 回傳的 markdown 渲染成 wellness 風格卡片
+  // 支援多種小節格式：## / ### / 1. / 一、 / 數字列表
+  function renderAiCards(targetEl, md) {
+    targetEl.innerHTML = '';
+    // 依小節切分（##、###、或行首 1. 2. 3. / 一、二、）
+    const blocks = md.split(/^#{2,3}\s+|^[0-9]+[.、]\s+|^[一二三四五六七八九]+\s*、/m)
+      .filter(function (s) { return s.trim(); });
+    if (blocks.length <= 1) {
+      // 沒有標準小節：降級成純文字卡片（保留 • 條列）
+      const card = document.createElement('div');
+      card.style.lineHeight = '1.7';
+      card.style.color = '#374151';
+      card.style.fontSize = '14px';
+      card.innerHTML = formatBold(md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'));
+      targetEl.appendChild(card);
+      return;
+    }
+    blocks.forEach(function (block, idx) {
+      const nl = block.indexOf('\n');
+      const title = (nl === -1 ? block : block.slice(0, nl)).trim();
+      const body = (nl === -1 ? '' : block.slice(nl + 1)).trim();
+
+      const card = document.createElement('div');
+      card.style.marginTop = idx === 0 ? '0' : '12px';
+      card.style.padding = '14px 16px';
+      card.style.borderRadius = '10px';
+      card.style.background = '#fdf2f8';
+      card.style.borderLeft = '4px solid #EC4899';
+
+      const h = document.createElement('div');
+      h.textContent = title;
+      h.style.fontWeight = '700';
+      h.style.fontSize = '15px';
+      h.style.color = '#831843';
+      h.style.marginBottom = '6px';
+      card.appendChild(h);
+
+      // 條列（• 或 - 或 * 或數字列表）
+      const lines = body.split('\n').map(function (l) { return l.trim(); }).filter(function (l) { return l; });
+      lines.forEach(function (line) {
+        const item = document.createElement('div');
+        item.style.lineHeight = '1.7';
+        item.style.color = '#374151';
+        item.style.fontSize = '14px';
+        const clean = line.replace(/^[•\-\*]\s*/, '').replace(/^[0-9]+[.、]\s*/, '');
+        item.innerHTML = '• ' + formatBold(clean);
+        card.appendChild(item);
       });
+
+      targetEl.appendChild(card);
+    });
+  }
+
+  // 把 **粗體** 轉成 <b> 標籤（先 escape 防止 XSS）
+  function formatBold(text) {
+    const esc = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return esc.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
   }
 
   // 渲染元件
@@ -381,16 +458,15 @@
       aiBox.style.boxShadow = '0 4px 12px rgba(0,0,0,0.06)';
 
       const aiTitle = document.createElement('h3');
-      aiTitle.textContent = '🔬 AI 文獻分析報告';
+      aiTitle.textContent = 'AI 分析報告';
       aiTitle.style.color = '#2D6A4F';
       aiTitle.style.marginTop = '0';
       aiBox.appendChild(aiTitle);
 
       const aiBody = document.createElement('div');
-      aiBody.style.whiteSpace = 'pre-wrap';
       aiBody.style.lineHeight = '1.7';
       aiBody.style.color = '#374151';
-      aiBody.textContent = '正在根據科學文獻為您產生個人化分析（約需 10–20 秒）…';
+      aiBody.innerHTML = '<div style="color:#6b7280;font-size:14px">正在根據科學文獻為您產生個人化分析（約需 10–20 秒）…</div>';
       aiBox.appendChild(aiBody);
       wrap.appendChild(aiBox);
 
