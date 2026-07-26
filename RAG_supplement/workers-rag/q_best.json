@@ -1,0 +1,1 @@
+OpenRouter API 錯誤 (HTTP 429): {"error":{"message":"Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day","code":429,"metadata":{"headers":{"X-RateLimit-Limit":"50","X-RateLimit-Remaining":"0","X-RateLimit-Reset":"1785110400000"},"provider_name":null}},"user_id":"user_3A1oH84sMZ3hPwY

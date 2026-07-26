@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "kidson-supplement-rag",
+  "main": "src/index.js",
+  "compatibility_date": "2026-07-01",
+  "observability": { "enabled": true },
+  "ai": { "binding": "AI" },
+  "vectorize": [
+    { "binding": "VECTORIZE", "index_name": "kidson-supplement-rag" }
+  ],
+  "vars": {
+    "TOP_K": "5",
+    "SCORE_THRESHOLD": "0.3",
+    "INGEST_REQUIRE_KEY": "true",
+    "LLM_MODEL": "nvidia/nemotron-3-super-120b-a12b:free"
+  }
+}
