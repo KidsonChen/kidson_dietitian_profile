@@ -8,6 +8,14 @@
   "vectorize": [
     { "binding": "VECTORIZE", "index_name": "kidson-supplement-rag" }
   ],
+  "assets_ignore": [
+    "**/data/**",
+    "**/node_modules/**",
+    "**/*.pdf",
+    "**/*.md",
+    "**/.kiro/**",
+    "**/.github/**"
+  ],
   "vars": {
     "TOP_K": "5",
     "SCORE_THRESHOLD": "0.3",
