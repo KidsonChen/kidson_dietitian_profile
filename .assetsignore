@@ -1,0 +1,28 @@
+# Cloudflare Workers assets ignore
+# Exclude the RAG worker subproject (deployed separately)
+RAG_supplement/
+workers-rag/
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Large / binary source
+**/*.pdf
+**/*.exe
+
+# git internals (must exclude - pack files are huge)
+.git/
+
+# Data and caches
+**/data/**
+**/__pycache__/**
+
+# CI / meta
+.github/
+.kiro/
+.gitignore.tmp
+**/*.log
+**/*.json
+!wrangler.jsonc
+!package.json
