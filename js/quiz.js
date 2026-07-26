@@ -466,43 +466,46 @@
       wrap.style.margin = '0 auto';
       wrap.style.padding = '24px';
 
-      // 基本資料摘要
-      const profileBox = document.createElement('div');
-      profileBox.style.padding = '12px 16px';
-      profileBox.style.borderRadius = '10px';
-      profileBox.style.background = '#f0fdf4';
-      profileBox.style.border = '1px solid #bbf7d0';
-      profileBox.style.marginBottom = '16px';
-      profileBox.style.fontSize = '14px';
-      profileBox.style.color = '#166534';
-      profileBox.style.lineHeight = '1.6';
+      // 基本資料摘要（pill chips）
       const g = profileLabels.gender[answers.gender] || '未填寫';
       const a = profileLabels.ageGroup[answers.ageGroup] || '未填寫';
       const grp = profileLabels.group[answers.group] || '一般族群';
-      profileBox.innerHTML = '基本資料：<b>' + g + '</b> ・ <b>' + a + '</b> ・ <b>' + grp + '</b>';
+      const profileBox = document.createElement('div');
+      profileBox.className = 'result-card';
+      profileBox.setAttribute('role', 'group');
+      profileBox.setAttribute('aria-label', '基本資料');
+      profileBox.innerHTML =
+        '<span class="result-card-label">基本資料</span>' +
+        '<div class="chip-row">' +
+          '<span class="chip chip--gender"><span class="chip-key">性別</span>' + g + '</span>' +
+          '<span class="chip chip--age"><span class="chip-key">年齡</span>' + a + '</span>' +
+          '<span class="chip chip--group"><span class="chip-key">族群</span>' + grp + '</span>' +
+        '</div>';
       wrap.appendChild(profileBox);
 
-      // 每日建議攝取量（台灣 DRIs 第八版）卡片
+      // 每日建議攝取量（台灣 DRIs 第八版）卡片 — 響應式網格
       const dris = getDrisBaseline(answers);
       const drisBox = document.createElement('div');
-      drisBox.style.padding = '14px 16px';
-      drisBox.style.borderRadius = '10px';
-      drisBox.style.background = '#eff6ff';
-      drisBox.style.border = '1px solid #bfdbfe';
-      drisBox.style.marginBottom = '16px';
-      drisBox.style.fontSize = '13px';
-      drisBox.style.color = '#1e40af';
-      drisBox.style.lineHeight = '1.8';
-      const drisRows = [
-        '鈣 ' + dris.calcium + ' mg',
-        '鐵 ' + dris.iron + ' mg',
-        '鋅 ' + dris.zinc + ' mg',
-        '鎂 ' + dris.magnesium + ' mg',
-        '維生素 D ' + dris.vitD + ' μg',
-        '葉酸 ' + dris.folate + ' μg',
-        'DHA ' + dris.dha + ' mg',
+      drisBox.className = 'dris-card';
+      drisBox.setAttribute('role', 'group');
+      drisBox.setAttribute('aria-label', '每日建議攝取量');
+      const drisItems = [
+        { name: '鈣', value: dris.calcium, unit: 'mg' },
+        { name: '鐵', value: dris.iron, unit: 'mg' },
+        { name: '鋅', value: dris.zinc, unit: 'mg' },
+        { name: '鎂', value: dris.magnesium, unit: 'mg' },
+        { name: '維生素 D', value: dris.vitD, unit: 'μg' },
+        { name: '葉酸', value: dris.folate, unit: 'μg' },
+        { name: 'DHA', value: dris.dha, unit: 'mg' },
       ];
-      drisBox.innerHTML = '<b>您的每日建議攝取量（台灣 DRIs 第八版）</b><br>' + drisRows.join('　・　');
+      const drisGrid = drisItems.map(function (it) {
+        return '<div class="dris-item"><div class="dris-name">' + it.name + '</div>' +
+               '<div class="dris-value">' + it.value + '<span class="dris-unit">' + it.unit + '</span></div></div>';
+      }).join('');
+      drisBox.innerHTML =
+        '<span class="result-card-label">每日建議攝取量</span>' +
+        '<div style="font-size:0.75rem;color:var(--color-text-muted);margin:-6px 0 12px">依台灣 DRIs 第八版</div>' +
+        '<div class="dris-grid">' + drisGrid + '</div>';
       wrap.appendChild(drisBox);
 
       const header = document.createElement('div');
