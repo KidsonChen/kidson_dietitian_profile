@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>RAG test</title></head>
+<body>
+<h3>RAG API Test</h3>
+<button onclick="run()">Run Query</button>
+<pre id="out">click to test...</pre>
+<script>
+async function run() {
+  const out = document.getElementById('out');
+  out.textContent = 'loading...';
+  try {
+    const res = await fetch('https://kidson-supplement-rag.kidson7911.workers.dev/api/query', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({query: '客戶健康需求：好眠方案。產品：晚安膠囊（南非醉茄+GABA+芝麻素）、胺基酸鋅、藻油DHA。說明功效與劑量。'})
+    });
+    const d = await res.json();
+    out.textContent = 'MODEL: ' + (d.model||'') + '\n\nANSWER:\n' + (d.answer||d.error||'') + '\n\nCITATIONS:\n' + (d.citations||[]).map(c=>c.source_file+':p'+c.page).join('\n');
+  } catch(e) {
+    out.textContent = 'ERR: ' + e;
+  }
+}
+</script>
+</body></html>

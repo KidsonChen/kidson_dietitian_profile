@@ -6,16 +6,16 @@
     "enabled": true
   },
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "ignore": [
+      "**/data/**",
+      "**/*.pdf",
+      "**/node_modules/**",
+      "**/.kiro/**",
+      "**/.github/**",
+      "RAG_supplement/**"
+    ]
   },
-  "assets_ignore": [
-    "**/data/**",
-    "**/*.pdf",
-    "**/node_modules/**",
-    "**/.kiro/**",
-    "**/.github/**",
-    "RAG_supplement/**"
-  ],
   "compatibility_flags": [
     "nodejs_compat"
   ]

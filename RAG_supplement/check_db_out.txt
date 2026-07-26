@@ -1,0 +1,14 @@
+document_chunks: 2120 rows
+processed_files: 19 rows
+
+Sample files:
+  Calcium.pdf: 107 chunks
+  coenzyme Q10.pdf: 108 chunks
+  Curcumin.pdf: 156 chunks
+  dietary fiber.pdf: 62 chunks
+  glucosamine.pdf: 123 chunks
+  iodine.pdf: 75 chunks
+  iron.pdf: 89 chunks
+  Lutein.pdf: 44 chunks
+  Magnesium.pdf: 122 chunks
+  Melatonin.pdf: 64 chunks
