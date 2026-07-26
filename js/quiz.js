@@ -135,11 +135,6 @@
       })
       .then(function (data) {
         var text = data.answer || '暫時無法產生分析報告。';
-        if (data.citations && data.citations.length) {
-          text += '\n\n📚 文獻依據：\n' + data.citations
-            .map(function (c) { return '[' + c.n + '] ' + c.source_file + ', p.' + c.page; })
-            .join('\n');
-        }
         targetEl.textContent = text;
       })
       .catch(function (err) {
