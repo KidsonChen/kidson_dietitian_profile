@@ -165,6 +165,7 @@
   // 支援多種小節格式：## / ### / 1. / 一、 / 數字列表
   function renderAiCards(targetEl, md) {
     targetEl.innerHTML = '';
+    md = cleanAiText(md);
     // 依小節切分（##、###、或行首 1. 2. 3. / 一、二、）
     const blocks = md.split(/^#{2,3}\s+|^[0-9]+[.、]\s+|^[一二三四五六七八九]+\s*、/m)
       .filter(function (s) { return s.trim(); });
@@ -218,6 +219,20 @@
   function formatBold(text) {
     const esc = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     return esc.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  }
+
+  // 去 AI 味：過濾模型偶發的模糊誇大詞（前端最後一道防線）
+  function cleanAiText(text) {
+    return text
+      .replace(/顯著/g, '')
+      .replace(/強效/g, '')
+      .replace(/廣泛落在/g, '')
+      .replace(/根據文獻/g, '')
+      .replace(/一般建議/g, '')
+      .replace(/正面影響/g, '明確作用')
+      .replace(/支持（?[^）]*功能）?/g, '參與')
+      .replace(/，舒緩焦慮與壓力/g, '，幫助放鬆')
+      .replace(/，幫助放鬆。/g, '。');
   }
 
   // 渲染元件
