@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GA4 預約轉換設定步驟 | Kidson營養師 內部參考</title>
+    <style>
+        :root{
+            --green:#2D6A4F; --green-dark:#1B4332; --green-light:#40916C;
+            --green-soft:#D8EFE3; --bg:#F4F7F5; --ink:#2C3338; --muted:#5C6B66;
+            --line:#E2E8E5; --amber:#B7791F; --amber-bg:#FDF6E3;
+        }
+        *{box-sizing:border-box;}
+        body{margin:0;font-family:'Noto Sans TC',-apple-system,'Segoe UI',sans-serif;
+            background:var(--bg);color:var(--ink);line-height:1.7;}
+        .wrap{max-width:840px;margin:0 auto;padding:48px 20px 80px;}
+        h1{font-family:'Noto Serif TC',serif;color:var(--green-dark);font-size:1.9rem;margin:0 0 .3rem;}
+        .sub{color:var(--muted);margin:0 0 1.5rem;}
+        .note{background:var(--amber-bg);border:1px solid #F0E2B8;border-left:4px solid var(--amber);
+            border-radius:8px;padding:14px 18px;font-size:.92rem;margin-bottom:2rem;}
+        .step{display:flex;gap:18px;background:#fff;border:1px solid var(--line);border-radius:14px;
+            padding:22px 24px;margin-bottom:1.1rem;box-shadow:0 1px 3px rgba(27,67,50,.05);}
+        .step .num{flex:0 0 auto;width:44px;height:44px;border-radius:50%;background:var(--green);
+            color:#fff;font-weight:700;font-size:1.2rem;display:flex;align-items:center;justify-content:center;
+            font-family:'Noto Serif TC',serif;}
+        .step h3{margin:.1rem 0 .4rem;font-size:1.1rem;color:var(--green-dark);}
+        .step p{margin:.2rem 0;font-size:.95rem;color:var(--ink);}
+        .step code{background:var(--green-soft);color:var(--green-dark);padding:1px 7px;border-radius:5px;
+            font-size:.86rem;font-family:'SFMono-Regular',Consolas,monospace;}
+        .path{display:inline-block;background:#eef2f0;border:1px solid var(--line);border-radius:6px;
+            padding:2px 9px;font-size:.85rem;color:var(--green-dark);margin:.2rem 0;}
+        .events{background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 0;margin-top:2rem;overflow:hidden;}
+        .events h2{font-family:'Noto Serif TC',serif;color:var(--green-dark);padding:14px 24px 4px;margin:0;font-size:1.25rem;}
+        .erow{display:grid;grid-template-columns:1.4fr 1fr 1fr;border-top:1px solid var(--line);}
+        .erow.head{background:var(--green-soft);font-weight:700;color:var(--green-dark);font-size:.85rem;}
+        .erow > div{padding:11px 16px;font-size:.88rem;}
+        .erow:not(.head) > div:first-child{font-family:'SFMono-Regular',Consolas,monospace;color:var(--green-dark);font-size:.82rem;}
+        .tag{display:inline-block;background:var(--green);color:#fff;border-radius:20px;padding:1px 10px;font-size:.74rem;margin-left:6px;}
+        footer{margin-top:2.5rem;text-align:center;color:var(--muted);font-size:.82rem;}
+        a{color:var(--green-light);}
+        @media(max-width:600px){.step{flex-direction:column;gap:10px;}.erow{grid-template-columns:1fr;}.erow > div{border-top:1px solid var(--line);}}
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h1>GA4 預約轉換事件設定步驟</h1>
+    <p class="sub">適用對象：Kidson營養師網站 · 預約頁 <code>contact.html</code> 已埋 3 個 GA4 事件</p>
+
+    <div class="note">
+        <strong>⚠️ 重要：</strong> 網站程式碼已經埋好事件，但 GA4 <strong>預設不會</strong>把這些事件當成「轉換」顯示在報表。
+        你必須在 GA4 後台手動「標記為轉換」才看得到預約漏斗數據。以下步驟照做即可。
+    </div>
+
+    <!-- 流程圖 -->
+    <div class="step">
+        <div class="num">1</div>
+        <div>
+            <h3>進入 GA4 後台</h3>
+            <p>開啟 <a href="https://analytics.google.com" target="_blank" rel="noopener">analytics.google.com</a> → 選擇網站資源（測量 ID：<code>G-0JX194EGE5</code>）。</p>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="num">2</div>
+        <div>
+            <h3>開啟「事件」報表</h3>
+            <p>左側選單 <span class="path">報表 ▸ 互動度 ▸ 事件</span>（或搜尋「事件」）。</p>
+            <p>這裡會列出網站收集到的所有事件，包含我們埋的 <code>click_line_booking</code>、<code>interact_booking_calendar</code>、<code>view_booking_calendar</code>。</p>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="num">3</div>
+        <div>
+            <h3>標記為轉換（關鍵事件）</h3>
+            <p>在事件列表中找到 <code>click_line_booking</code> 與 <code>interact_booking_calendar</code>，
+               把右側的開關 <strong>「標記為轉換」打開</strong>。</p>
+            <p>建議把這兩個設成轉換；<code>view_booking_calendar</code> 僅作曝光參考，可不設。</p>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="num">4</div>
+        <div>
+            <h3>等待資料累積</h3>
+            <p>轉換事件啟用後約 <strong>24–48 小時</strong>才會出現在「轉換」報表與探索分析裡。這段時間線上已經在收集，不用重跑。</p>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="num">5</div>
+        <div>
+            <h3>（選用）匯入 Google Ads</h3>
+            <p>若有投放 Google Ads：<span class="path">GA4 ▸ 廣告偏好設定 ▸ 已連結的產品 ▸ Google Ads</span>
+               → 把上述事件匯入為 Ads 轉換，可做「預約」為目標的投廣優化。</p>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="num">6</div>
+        <div>
+            <h3>（選用）建立探索報表看漏斗</h3>
+            <p><span class="path">探索 ▸ 空白 ▸ 漏斗探索</span>：步驟1 <code>view_booking_calendar</code> → 步驟2 <code>interact_booking_calendar</code> → 步驟3 <code>click_line_booking</code>，
+               即可看「看到日曆 → 互動 → 加 LINE」的流失率。</p>
+        </div>
+    </div>
+
+    <!-- 事件清單 -->
+    <div class="events">
+        <h2>已埋事件一覽</h2>
+        <div class="erow head">
+            <div>事件名稱</div><div>觸發時機</div><div>建議設定</div>
+        </div>
+        <div class="erow">
+            <div>view_booking_calendar</div><div>日曆區塊滾動進視窗</div><div>曝光參考</div>
+        </div>
+        <div class="erow">
+            <div>interact_booking_calendar<span class="tag">轉換</span></div><div>點擊 / 聚焦日曆</div><div>標記為轉換</div>
+        </div>
+        <div class="erow">
+            <div>click_line_booking<span class="tag">轉換</span></div><div>點「加 LINE 直接預約」</div><div>標記為轉換</div>
+        </div>
+    </div>
+
+    <footer>
+        內部參考文件 · 對應程式碼見 <code>contact.html</code> 內聯 script 的 <code>trackBookingEvent()</code><br>
+        更新日期：2026-07-27
+    </footer>
+</div>
+</body>
+</html>

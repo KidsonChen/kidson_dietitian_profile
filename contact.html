@@ -147,6 +147,9 @@
                         <a class="nav-link" href="quiz.html">健康檢測</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="articles.html">衛教文章</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="about.html">關於我</a>
                     </li>
                     <li class="nav-item">
@@ -194,112 +197,51 @@
         </div>
     </section>
 
-    <!-- 預約營養諮詢區塊 (從第一個貼上的內容整合進來) -->
+    <!-- 預約營養諮詢區塊：以 Google 日曆排程為單一預約入口 -->
     <section id="contact" class="section bg-light py-5">
         <div class="container">
-            <h2 class="text-center mb-5" data-aos="fade-up">預約營養諮詢</h2>
-            
-            <!-- 步驟導航 -->
-            <div class="row justify-content-center mb-4">
-                <div class="col-md-8">
-                    <div class="progress-steps">
-                        <div class="step active" id="step1-indicator">
-                            <span class="step-number">1</span>
-                            <span class="step-text">選擇時間</span>
-                        </div>
-                        <div class="step" id="step2-indicator">
-                            <span class="step-number">2</span>
-                            <span class="step-text">填寫資料</span>
-                        </div>
-                        <div class="step" id="step3-indicator">
-                            <span class="step-number">3</span>
-                            <span class="step-text">完成預約</span>
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-label">Book a Consult</span>
+                <h2 class="section-title">預約營養諮詢</h2>
+                <p class="section-subtitle">使用下方 Google 日曆選擇方便的時段，填寫基本資料後即完成預約，系統會自動寄送確認信。</p>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-9 col-xl-8" data-aos="fade-up" data-aos-delay="100">
+
+                    <!-- 諮詢前準備清單（提高預約後成交率） -->
+                    <div class="prep-checklist mb-4" aria-labelledby="prep-title">
+                        <h3 id="prep-title" class="prep-title"><i class="fas fa-clipboard-list"></i> 諮詢前準備清單</h3>
+                        <p class="prep-sub">第一次來諮詢前，準備好以下資料能讓營養師更快掌握你的狀況，當次就給出可執行的飲食調整。</p>
+                        <ul class="prep-list">
+                            <li><i class="fas fa-file-medical"></i><div><strong>近期健康檢查報告</strong><span>血液數值（血糖、血脂、肝腎功能）、BMI、腰圍等，有數據才好對症。</span></div></li>
+                            <li><i class="fas fa-pills"></i><div><strong>目前正在服用的藥物 / 保健食品</strong><span>名稱與劑量，避免營養介入與藥物相互影響。</span></div></li>
+                            <li><i class="fas fa-utensils"></i><div><strong>最近 3 天的飲食紀錄</strong><span>含外食內容、份量、時間，手機照片也行，幫助抓出飲食盲點。</span></div></li>
+                            <li><i class="fas fa-bullseye"></i><div><strong>你的目標與困擾</strong><span>想減重幾公斤？血糖想控制？或總是外食不知道怎麼吃？先想清楚。</span></div></li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body p-2 p-md-3">
+                            <div class="calendar-container" id="bookingCalendar" data-ga-track="booking_calendar_view">
+                                <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3IcVpZIEd0rahhWJlwZW9K-0SH3Upx9F3DRgHoGlBS6tDu8Yim-UKXp6NlKyzupty_3wxdG3iT?gv=true"
+                                title="預約營養諮詢時段選擇（Google 日曆）"
+                                style="border: 0" width="100%" height="540" frameborder="0"></iframe>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="row justify-content-center">
-                <div class="col-md-8" data-aos="fade-up" data-aos-delay="100">
-                    <div class="card">
-                        <div class="card-body">
-                            <!-- 步驟1：選擇時間 -->
-                            <div id="step1" class="appointment-step">
-                                <h4 class="mb-4">步驟1：選擇諮詢時間</h4>
-                                <div class="calendar-container">
-                                    <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3IcVpZIEd0rahhWJlwZW9K-0SH3Upx9F3DRgHoGlBS6tDu8Yim-UKXp6NlKyzupty_3wxdG3iT?gv=true" 
-                                    style="border: 0" width="100%" height="500" frameborder="0"></iframe>
-                                </div>
-                                <div class="text-center mt-4">
-                                    <p class="text-muted">選擇完時間後，Google日曆會提示您完成預約</p>
-                                    <p class="fw-bold">完成Google日曆預約後，請點擊下方按鈕繼續</p>
-                                    <button class="btn btn-primary" onclick="goToStep(2)">繼續填寫聯絡資料</button>
-                                </div>
-                            </div>
-                            
-                            <!-- 步驟2：填寫資料 -->
-                            <div id="step2" class="appointment-step" style="display: none;">
-                                <h4 class="mb-4">步驟2：填寫聯絡資料</h4>
-                                <form id="contactForm">
-                                    <input type="hidden" id="appointmentDate" name="appointmentDateInfo" value="">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">姓名</label>
-                                        <input type="text" class="form-control" id="name" name="name" 
-                                               pattern="^[\u4e00-\u9fa5a-zA-Z\s]{2,20}$" 
-                                               title="請輸入2-20個中英文字符"
-                                               required>
-                                        <div class="invalid-feedback">請輸入2-20個中英文字符</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">電子郵件</label>
-                                        <input type="email" class="form-control" id="email" name="email" 
-                                               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required
-                                               title="請輸入有效的電子郵件地址"
-                                               required>
-                                        <div class="invalid-feedback">請輸入有效的電子郵件地址</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="phone" class="form-label">電話</label>
-                                        <input type="tel" class="form-control" id="phone" name="phone"
-                                               pattern="^(\+886|0)[0-9]{9,10}$"
-                                               title="請輸入有效的台灣電話號碼（格式：+886或0開頭，共10-11位數字）"
-                                               required>
-                                        <div class="invalid-feedback">請輸入有效的台灣電話號碼</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="consultation-type" class="form-label">諮詢類型</label>
-                                        <select class="form-select" id="consultation-type" name="consultation-type" required>
-                                            <option value="">請選擇諮詢類型</option>
-                                            <option value="體重管理">體重管理</option>
-                                            <option value="慢性病營養">慢性病營養</option>
-                                            <option value="保健食品規劃">保健食品規劃</option>
-                                            <option value="其他">其他</option>
-                                        </select>
-                                        <div class="invalid-feedback">請選擇諮詢類型</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="message" class="form-label">備註</label>
-                                        <textarea class="form-control" id="message" name="message" rows="3"></textarea>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="goToStep(1)">返回</button>
-                                        <button type="submit" class="btn btn-primary" id="submitBtn">送出資料</button>
-                                    </div>
-                                    <div id="formMessage" class="mt-3"></div>
-                                </form>
-                            </div>
-                            
-                            <!-- 步驟3：完成預約 -->
-                            <div id="step3" class="appointment-step" style="display: none;">
-                                <div class="text-center py-5">
-                                    <i class="fas fa-check-circle text-success fa-5x mb-4"></i>
-                                    <h4 class="mb-3">預約已成功完成！</h4>
-                                    <p>我們已經收到您的預約和聯絡資訊，將通過電子郵件或電話與您確認詳情。</p>
-                                    <p class="mt-4">如有任何問題，請聯絡 <a href="mailto:kidson7911@gmail.com">kidson7911@gmail.com</a></p>
-                                    <a href="index.html" class="btn btn-outline-primary mt-3">返回首頁</a>
-                                </div>
-                            </div>
-                        </div>
+
+                    <!-- 安心提示（aria-live 讓螢幕閱讀器也能讀到） -->
+                    <div class="booking-reassure mt-4" data-aos="fade-up" data-aos-delay="200" aria-live="polite">
+                        <div class="reassure-item"><i class="fas fa-check-circle"></i> 完成預約後，您會收到 <strong>Google 日曆確認信</strong></div>
+                        <div class="reassure-item"><i class="fas fa-check-circle"></i> 我們也會透過 <strong>LINE 或 Email</strong> 與您聯繫確認細節</div>
+                        <div class="reassure-item"><i class="fas fa-check-circle"></i> 如有疑問，隨時來信 <a href="mailto:kidson7911@gmail.com">kidson7911@gmail.com</a></div>
+                    </div>
+
+                    <div class="text-center mt-4" data-aos="fade-up" data-aos-delay="300">
+                        <a href="https://lin.ee/ZDUOvpG" class="btn btn-primary btn-lg me-2 mb-2"><i class="fab fa-line me-1"></i> 加 LINE 直接預約</a>
+                        <a href="index.html" class="btn btn-outline-primary btn-lg mb-2">返回首頁</a>
                     </div>
                 </div>
             </div>
@@ -322,6 +264,7 @@
                     <ul class="list-unstyled">
                         <li><a href="#index" class="text-white">首頁</a></li>
                         <li><a href="services_info.html" class="text-white">服務</a></li>
+                        <li><a href="articles.html" class="text-white">衛教文章</a></li>
                         <li><a href="about.html" class="text-white">關於我</a></li>
                         <li><a href="contact.html" class="text-white">預約諮詢</a></li>
                     </ul>
@@ -375,121 +318,41 @@
             }
         }
 
-        // 預約表單步驟切換函數
-        function goToStep(step) {
-            // 隱藏所有步驟
-            document.querySelectorAll('.appointment-step').forEach(el => {
-                el.style.display = 'none';
-            });
-            
-            // 顯示目標步驟
-            document.getElementById('step' + step).style.display = 'block';
-            
-            // 更新步驟指示器
-            document.querySelectorAll('.step').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            // 激活當前步驟和之前的步驟
-            for (let i = 1; i <= step; i++) {
-                document.getElementById('step' + i + '-indicator').classList.add('active');
+        // GA4 預約轉換追蹤（與 gtag 既有 G-0JX194EGE5 共用）
+        function trackBookingEvent(action, params) {
+            if (typeof gtag === 'function') {
+                gtag('event', action, Object.assign({ event_category: 'booking' }, params || {}));
             }
-            
-            // 如果從步驟1進入步驟2，嘗試獲取並存儲Google日曆預約信息
-            if (step === 2) {
-                // 嘗試從URL或用戶輸入獲取預約信息
-                try {
-                    // 這裡提示用戶輸入已預約的日期和時間
-                    const appointmentDateInfo = prompt("請輸入您剛才在Google日曆中預約的日期和時間:", "");
-                    
-                    if (appointmentDateInfo) {
-                        // 存儲預約信息到sessionStorage
-                        sessionStorage.setItem('appointmentDateInfo', appointmentDateInfo);
-                    }
-                } catch (error) {
-                    console.error("獲取預約信息時出錯:", error);
-                }
-            }
-            
-            // 滾動到頂部
-            document.getElementById('step' + step).scrollIntoView({ behavior: 'smooth' });
         }
 
-        // 表單提交處理
-        document.getElementById('contactForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const form = event.target;
-            const submitBtn = document.getElementById('submitBtn');
-            const formMessage = document.getElementById('formMessage');
-            
-            // 檢查表單是否有效
-            if (!form.checkValidity()) {
-                event.stopPropagation();
-                form.classList.add('was-validated');
-                return;
-            }
-            
-            // 禁用提交按鈕
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 處理中...';
-            
-            // 收集表單數據
-            const formData = new FormData(form);
-            const data = new URLSearchParams();
-            for (const [key, value] of formData.entries()) {
-                data.append(key, value);
-            }
-            
-            const appointmentDateInfo = sessionStorage.getItem('appointmentDateInfo');
-            console.log('appointmentDateInfo:', appointmentDateInfo);
-            if (appointmentDateInfo) {
-                document.getElementById('appointmentDate').value = appointmentDateInfo;
-                data.append('appointmentDate', appointmentDateInfo);
-            }
-            
-            // 替換為您的 Google Apps Script 部署 URL
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycbykZvL6TemxVGOFloV4JNnO1KJK6hDQOPV4aB_5REKoUod-Z2--GlQ5e4QZy7PVrKz1/exec';
-            
-            fetch(scriptUrl, {
-                method: 'POST',
-                mode: 'no-cors', // 由於跨域限制，使用 no-cors 模式
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: data
-            })
-            .then(() => {
-                // 由於使用 no-cors，無法讀取響應內容，但仍可繼續處理
-                goToStep(3);
-                form.reset();
-            })
-            .catch(error => {
-                formMessage.innerHTML = '<div class="alert alert-danger">發送失敗，請稍後再試。</div>';
-                console.error('Error:', error);
-            })
-            .finally(() => {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '送出資料';
-            });
-        });
-
-        // 即時驗證
-        document.querySelectorAll('input, textarea, select').forEach(input => {
-            input.addEventListener('input', function() {
-                if (this.value) {
-                    if (this.checkValidity()) {
-                        this.classList.remove('is-invalid');
-                        this.classList.add('is-valid');
-                    } else {
-                        this.classList.remove('is-valid');
-                        this.classList.add('is-invalid');
-                    }
-                } else {
-                    this.classList.remove('is-valid', 'is-invalid');
+        // 1) 日曆區塊進入視窗（曝光）：用 IntersectionObserver 只算一次
+        const calEl = document.getElementById('bookingCalendar');
+        if (calEl) {
+            const calObserver = new IntersectionObserver(([entry]) => {
+                if (entry.isIntersecting) {
+                    trackBookingEvent('view_booking_calendar', { method: 'google_calendar' });
+                    calObserver.disconnect();
                 }
+            }, { threshold: 0.4 });
+            calObserver.observe(calEl);
+
+            // 2) 使用者與日曆互動（點擊/聚焦 iframe）：一次即可，斷開監聽
+            const fireCalInteract = () => {
+                trackBookingEvent('interact_booking_calendar', { method: 'google_calendar' });
+                calEl.removeEventListener('click', fireCalInteract);
+                calEl.removeEventListener('focusin', fireCalInteract);
+            };
+            calEl.addEventListener('click', fireCalInteract);
+            calEl.addEventListener('focusin', fireCalInteract);
+        }
+
+        // 3) 點擊「加 LINE 直接預約」：高意圖轉換事件
+        const lineBtn = document.querySelector('a[href*="lin.ee"]');
+        if (lineBtn) {
+            lineBtn.addEventListener('click', () => {
+                trackBookingEvent('click_line_booking', { method: 'line' });
             });
-        });
+        }
     </script>
 </body>
 </html>

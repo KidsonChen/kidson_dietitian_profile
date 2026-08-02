@@ -72,4 +72,43 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <!-- Articles / 衛教文章 -->
+  <url>
+    <loc>https://storage.googleapis.com/kidson_dietitian/kidson_dietitian_profile/articles.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 單篇衛教文章 -->
+  <url>
+    <loc>https://storage.googleapis.com/kidson_dietitian/kidson_dietitian_profile/article-1-control-sugar.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://storage.googleapis.com/kidson_dietitian/kidson_dietitian_profile/article-2-eating-out.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://storage.googleapis.com/kidson_dietitian/kidson_dietitian_profile/article-3-protein.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://storage.googleapis.com/kidson_dietitian/kidson_dietitian_profile/article-4-breakfast.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://storage.googleapis.com/kidson_dietitian/kidson_dietitian_profile/article-5-hidden-calories.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://storage.googleapis.com/kidson_dietitian/kidson_dietitian_profile/article-6-plateau.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
