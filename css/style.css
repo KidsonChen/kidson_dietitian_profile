@@ -203,6 +203,31 @@ body {
     z-index: 2;
 }
 
+/* 金色線條：標題下方漸層分隔線 + 內框金線（增加高級感） */
+.hero-content::before {
+    content: '';
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+    z-index: 3;
+}
+
+.hero-divider {
+    width: 64px;
+    height: 2px;
+    margin: 1.4rem auto;
+    background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+    border-radius: var(--radius-full);
+}
+
+.hero-actions {
+    position: relative;
+}
+
 .hero-content {
     position: relative;
     z-index: 3;
