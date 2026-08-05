@@ -1,22 +1,15 @@
 #!/usr/bin/env python3
 """
-upload_to_cloudinary.py — 把 img/ 下所有圖片上傳到 Cloudinary，產生 URL 對照表。
+upload_to_cloudinary.py — 把 img/ 下所有圖片上傳到 Cloudinary（unsigned preset），產生 URL 對照表。
 
 用法：
-  1) 設環境變數（建議）：
-     export CLOUDINARY_CLOUD_NAME=xxxx
-     export CLOUDINARY_API_KEY=xxxx
-     export CLOUDINARY_API_SECRET=xxxx
-  2) 或在此檔直接填寫下方 CRED 變數（不建議 commit 到 git）
-  3) 執行：python upload_to_cloudinary.py
+  export CLOUDINARY_CLOUD_NAME=xxxx
+  export CLOUDINARY_UPLOAD_PRESET=web_img
+  python upload_to_cloudinary.py
 
-上傳後會產生 cloudinary_manifest.json：
-  { "img/photo.jpg": "https://res.cloudinary.com/<cloud>/image/upload/<public_id>", ... }
-
-設計：
-  - public_id 用原檔名（不含副檔名），folder = "kidson"（避免與其他專案撞名）
-  - 真人照 photo.jpg / leslie.jpg 一同上傳，內容不變
-  - 加 f_auto,q_auto 讓 Cloudinary 自動優化格式與畫質
+unsigned upload 不允許指定 public_id（preset 會自動命名），
+所以直接採用上傳回傳的 secure_url 當作真實 URL，並插入 f_auto,q_auto 優化。
+manifest 鍵值：本地相對路徑 -> 優化後 Cloudinary URL
 """
 import os
 import json
@@ -28,26 +21,14 @@ try:
 except ImportError:
     raise SystemExit("請先安裝 cloudinary：pip install cloudinary")
 
-CRED = {
-    "cloud_name": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
-    "api_key": os.environ.get("CLOUDINARY_API_KEY", ""),
-    "api_secret": os.environ.get("CLOUDINARY_API_SECRET", ""),
-}
-
-if not all(CRED.values()):
-    raise SystemExit("缺少 Cloudinary 憑證：請設 CLOUDINARY_CLOUD_NAME / API_KEY / API_SECRET 環境變數")
-
-cloudinary.config(
-    cloud_name=CRED["cloud_name"],
-    api_key=CRED["api_key"],
-    api_secret=CRED["api_secret"],
-)
-
+CLOUD = os.environ.get("CLOUDINARY_CLOUD_NAME", "dv4m2q1i8")
+PRESET = os.environ.get("CLOUDINARY_UPLOAD_PRESET", "web_img")
 IMG_DIR = "img"
-FOLDER = "kidson"
 
-def build_url(public_id):
-    return f"https://res.cloudinary.com/{CRED['cloud_name']}/image/upload/f_auto,q_auto/{public_id}"
+def optimize(url):
+    # https://res.cloudinary.com/<c>/image/upload/v123/xxx.jpg
+    # -> https://res.cloudinary.com/<c>/image/upload/f_auto,q_auto/v123/xxx.jpg
+    return url.replace("/image/upload/", "/image/upload/f_auto,q_auto/", 1)
 
 def main():
     files = sorted(glob.glob(os.path.join(IMG_DIR, "*.jpg")) +
@@ -56,17 +37,13 @@ def main():
     manifest = {}
     for f in files:
         base = os.path.basename(f)
-        name, _ = os.path.splitext(base)
-        public_id = f"{FOLDER}/{name}"
-        print(f"上傳 {base} -> {public_id} ...", end=" ", flush=True)
+        print(f"上傳 {base} ...", end=" ", flush=True)
         try:
-            res = cloudinary.uploader.upload(
-                f,
-                public_id=public_id,
-                overwrite=True,
-                folder=FOLDER,
-            )
-            manifest[f] = build_url(public_id)
+            res = cloudinary.uploader.unsigned_upload(f, PRESET)
+            secure = res.get("secure_url")
+            if not secure:
+                raise RuntimeError("no secure_url in response")
+            manifest[f] = optimize(secure)
             print("OK")
         except Exception as e:
             print(f"失敗: {e}")

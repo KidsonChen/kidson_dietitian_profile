@@ -8,12 +8,10 @@ rewrite_img_urls.py — 把 HTML / CSS 裡的本地 img 引用與舊 GCS 外鏈�
 
 行為：
   - 掃描所有 *.html 與 css/*.css
-  - 將 'img/xxx.jpg' / 'img/xxx.png' 替換為 manifest 中的 Cloudinary URL
-  - 將舊 'https://storage.googleapis.com/kidson_dietitian/.../img/xxx.jpg' 與
-        'https://storage.cloud.google.com/kidson_dietitian/.../img/xxx.jpg'
-    也替換為對應 Cloudinary URL（依檔名匹配）
+  - 依「檔名」全域匹配（含 img/xxx.jpg、../img/xxx.jpg、GCS 舊外鏈），
+    統一替換為 manifest 中的 Cloudinary URL
   - 不動任何非 img 的資源（font/css/js 外鏈保留）
-  - 改前會先 git stash 友好提示；此腳本只做文字替換，可重跑（冪等）
+  - 冪等：可重跑
 """
 import os
 import re
@@ -30,13 +28,11 @@ def load_manifest():
 
 def main():
     manifest = load_manifest()
-    # 建立 檔名 -> URL 的查表（去掉 'img/' 前綴）
+    # 建立 檔名(含副檔名) -> URL
     name_to_url = {}
     for local, url in manifest.items():
         base = os.path.basename(local)
-        name, _ = os.path.splitext(base)
         name_to_url[base] = url
-        name_to_url[name] = url  # 也用無副檔名鍵
 
     files = glob.glob("*.html") + glob.glob("css/*.css")
     total_repl = 0
@@ -45,28 +41,20 @@ def main():
             txt = fp.read()
         original = txt
 
-        # 1) 本地 img/xxx 引用
-        def repl_local(m):
+        def repl(m):
             nonlocal total_repl
-            ref = m.group(1)            # 例如 img/photo.jpg 或 ../img/photo.jpg
-            base = os.path.basename(ref)
-            if base in name_to_url:
-                total_repl += 1
-                return m.group(0).replace(ref, name_to_url[base])
-            return m.group(0)
-        txt = re.sub(r"(['\"])((?:(\.\./)*img/)?img/[A-Za-z0-9_.\-]+\.(?:jpg|jpeg|png|webp))(['\"])", repl_local, txt)
-
-        # 2) 舊 GCS 外鏈（依檔名匹配）
-        def repl_gcs(m):
-            nonlocal total_repl
-            full = m.group(0)
-            base = os.path.basename(full.split("?")[0])
+            full = m.group(0)          # 含前後引號的完整匹配
+            path = m.group(2)          # 不含引號的圖片路徑
+            base = os.path.basename(path.split("?")[0])
             if base in name_to_url:
                 total_repl += 1
                 return name_to_url[base]
             return full
-        txt = re.sub(r"https?://storage\.cloud\.google\.com/kidson_dietitian/kidson_dietitian_profile/img/[A-Za-z0-9_.\-]+\.(?:jpg|jpeg|png|webp)(?:\?[^\s'\"]*)?", repl_gcs, txt)
-        txt = re.sub(r"https?://storage\.googleapis\.com/kidson_dietitian/kidson_dietitian_profile/img/[A-Za-z0-9_.\-]+\.(?:jpg|jpeg|png|webp)(?:\?[^\s'\"]*)?", repl_gcs, txt)
+
+        # 匹配任何以圖片副檔名結尾的本地路徑（img/ 或 ../img/ 或 ./img/），前後有引號
+        txt = re.sub(r"(['\"])((?:(\.\./|\./)*img/)?[A-Za-z0-9_.\-]+\.(?:jpg|jpeg|png|webp))\1", repl, txt)
+        # 匹配舊 GCS 外鏈（整條 URL）
+        txt = re.sub(r"https?://storage\.(cloud\.google\.com|googleapis\.com)/kidson_dietitian/kidson_dietitian_profile/[^\s'\")]*\.(?:jpg|jpeg|png|webp)(?:\?[^\s'\")]*)?", repl, txt)
 
         if txt != original:
             with open(f, "w", encoding="utf-8") as fp:

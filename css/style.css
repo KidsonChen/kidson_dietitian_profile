@@ -166,7 +166,7 @@ body {
 .hero-section {
     background:
         linear-gradient(135deg, rgba(27, 67, 50, 0.82) 0%, rgba(45, 106, 79, 0.65) 50%, rgba(64, 145, 108, 0.45) 100%),
-        url('../img/hero_premium.jpg');
+        url(https://res.cloudinary.com/dv4m2q1i8/image/upload/f_auto,q_auto/v1785922262/q27akdlogcteukln5kqa.png);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -357,7 +357,7 @@ body {
 .contact-header {
     background:
         linear-gradient(135deg, rgba(27, 67, 50, 0.88) 0%, rgba(45, 106, 79, 0.75) 100%),
-        url('../img/hero_premium.jpg');
+        url(https://res.cloudinary.com/dv4m2q1i8/image/upload/f_auto,q_auto/v1785922262/q27akdlogcteukln5kqa.png);
     background-size: cover;
     background-position: center;
     min-height: 320px;
@@ -1671,7 +1671,7 @@ body {
 .quiz-header {
     background:
         linear-gradient(135deg, rgba(27, 67, 50, 0.88) 0%, rgba(45, 106, 79, 0.75) 100%),
-        url('../img/hero_premium.jpg');
+        url(https://res.cloudinary.com/dv4m2q1i8/image/upload/f_auto,q_auto/v1785922262/q27akdlogcteukln5kqa.png);
     background-size: cover;
     background-position: center;
     padding: 150px 0 70px;
